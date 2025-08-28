@@ -6,7 +6,7 @@ export class GPTAnalyzer {
     systemPrompt;
     constructor(apiKey, model = 'gpt-4o') {
         this.client = new OpenAI({
-            apiKey,
+            apiKey: "dummy",
             baseURL: 'https://llm-proxy-735482512776.us-west1.run.app',
             dangerouslyAllowBrowser: true
         });
@@ -14,27 +14,13 @@ export class GPTAnalyzer {
         this.systemPrompt = this.buildSystemPrompt();
     }
     async analyzeAndRespond(message, currentSnapshot, context) {
-        const messages = this.buildConversationMessages(message, currentSnapshot, context);
         try {
-            const response = await this.client.chat.completions.create({
-                model: this.model,
-                messages,
-                tools: tomTools,
-                tool_choice: 'auto',
-                // temperature: 0.7,
-                // max_tokens: 2000,
-                // parallel_tool_calls: true
-            });
-            const assistantMessage = response.choices[0]?.message;
-            if (!assistantMessage) {
-                throw new Error('No response from GPT');
-            }
-            const conversationResponse = assistantMessage.content || '';
-            const toolCalls = assistantMessage.tool_calls || [];
-            // Process tool calls to create ToM updates
-            const tomUpdates = await this.processToolCalls(toolCalls, currentSnapshot);
-            // Create updated snapshot
+            // Step 1: Always run ToM analysis first
+            const tomUpdates = await this.analyzeTheoryOfMind(message, currentSnapshot, context);
             const newSnapshot = this.createUpdatedSnapshot(currentSnapshot, tomUpdates);
+            // Step 2: Generate conversational response informed by ToM analysis
+            const conversationResponse = await this.generateConversationalResponse(message, newSnapshot, tomUpdates, context);
+            // console.log(conversationResponse);
             return {
                 response: conversationResponse,
                 tomUpdates,
@@ -48,21 +34,65 @@ export class GPTAnalyzer {
             throw new Error(`Analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     }
+    async analyzeTheoryOfMind(message, currentSnapshot, context) {
+        const messages = this.buildToMAnalysisMessages(message, currentSnapshot, context);
+        const response = await this.client.chat.completions.create({
+            model: this.model,
+            messages,
+            tools: tomTools,
+            tool_choice: 'required',
+            parallel_tool_calls: true
+        });
+        const assistantMessage = response.choices[0]?.message;
+        if (!assistantMessage) {
+            throw new Error('No ToM analysis response from GPT');
+        }
+        const toolCalls = assistantMessage.tool_calls || [];
+        return await this.processToolCalls(toolCalls, currentSnapshot);
+    }
+    async generateConversationalResponse(message, updatedSnapshot, tomUpdates, context) {
+        const messages = this.buildConversationalMessages(message, updatedSnapshot, tomUpdates, context);
+        const response = await this.client.chat.completions.create({
+            model: this.model,
+            messages,
+            temperature: 0.7
+        });
+        const assistantMessage = response.choices[0]?.message;
+        if (!assistantMessage?.content) {
+            throw new Error('No conversational response from GPT');
+        }
+        return assistantMessage.content;
+    }
+    async *streamConversationalResponse(message, updatedSnapshot, tomUpdates, context) {
+        const messages = this.buildConversationalMessages(message, updatedSnapshot, tomUpdates, context);
+        const stream = await this.client.chat.completions.create({
+            model: this.model,
+            messages,
+            temperature: 0.7,
+            stream: true
+        });
+        for await (const chunk of stream) {
+            const delta = chunk.choices[0]?.delta?.content;
+            if (delta) {
+                yield delta;
+            }
+        }
+    }
     async *streamConversation(message, currentSnapshot, context) {
-        const messages = this.buildConversationMessages(message, currentSnapshot, context);
+        const messages = this.buildToMAnalysisMessages(message, currentSnapshot, context);
         try {
             const stream = await this.client.chat.completions.create({
                 model: this.model,
                 messages,
                 tools: tomTools,
-                tool_choice: 'auto',
+                tool_choice: 'required',
                 // temperature: 0.7,
                 // max_tokens: 2000,
+                parallel_tool_calls: true,
                 stream: true
             });
             // Just yield the raw OpenAI chunks - let UI handle accumulation
             for await (const chunk of stream) {
-                console.log(chunk);
                 yield chunk;
             }
         }
@@ -101,63 +131,77 @@ export class GPTAnalyzer {
         return Object.values(toolCallsMap);
     }
     buildSystemPrompt() {
-        return `You are an expert conversational AI with advanced theory of mind capabilities. 
-
-CRITICAL INSTRUCTIONS:
-1. FIRST: Always write a helpful, natural conversational response to the human in plain text
-2. SECOND: Call the appropriate theory of mind tools to analyze their mental states
-3. NEVER respond with only tool calls - you must include conversational text
-
-RESPONSE FORMAT:
-Your response must contain BOTH:
-- Plain text conversation addressing the human's message
-- Function calls to analyze their mental states (parallel to the text)
-
-CONVERSATION REQUIREMENTS:
-- Write natural, helpful text that directly addresses their message
-- Be empathetic, engaging, and provide value
-- Answer questions, offer insights, or provide assistance
-- Use a warm, conversational tone
-- Do NOT mention mental state analysis in your text
-
-THEORY OF MIND ANALYSIS:
-- Use the provided functions when you detect mental states
-- Be conservative with confidence scores (0.6-0.9 typically)
-- Analyze: emotions, beliefs, goals, attention, social dynamics
-- Consider conversation history and context
-
-EXAMPLE FLOW:
-Human: "I'm stuck on this math problem"
-✓ Your text: "I'd be happy to help you with that math problem! What specific part is giving you trouble?"
-✓ Your tools: update_emotional_state(frustration), update_motivational_state(learning goal)
-
-✗ WRONG: Only calling tools without conversational text
-✓ CORRECT: Both conversational text AND mental state tools
-
-Always provide the human with a meaningful conversational response alongside the analysis!`;
+        return `You are an expert conversational AI with advanced theory of mind capabilities.`;
     }
-    buildConversationMessages(message, currentSnapshot, context) {
+    buildToMSystemPrompt() {
+        return `You are a specialized theory of mind analyzer. Your ONLY job is to analyze the human's mental states from their message and call the appropriate analysis tools.
+
+Analyze their message and use the available tools to identify:
+- Emotional states (what they're feeling)
+- Epistemic states (what they believe/know)  
+- Motivational states (what they want/desire)
+- Attentional states (what they're focused on)
+- Social awareness (relationship dynamics)
+
+You MUST call the appropriate analysis tools for every message.`;
+    }
+    buildConversationalSystemPrompt(snapshot, updates) {
+        const analysisContext = this.formatAnalysisForConversation(snapshot, updates);
+        return `You are a helpful conversational AI. Respond naturally and helpfully to the human's message.
+
+Here's your analysis of their current mental state:
+${analysisContext}
+
+Use this understanding to provide an empathetic, contextually appropriate response. Be natural and conversational - don't explicitly mention the mental state analysis unless relevant.`;
+    }
+    buildToMAnalysisMessages(message, currentSnapshot, context) {
+        let systemContent = this.buildToMSystemPrompt();
+        if (currentSnapshot) {
+            const snapshotSummary = this.summarizeSnapshot(currentSnapshot);
+            systemContent += `\n\nPrevious understanding: ${snapshotSummary}`;
+        }
         const messages = [
-            { role: 'system', content: this.systemPrompt }
+            { role: 'system', content: systemContent }
         ];
         // Add conversation history for context
         if (context?.messageHistory && context.messageHistory.length > 0) {
-            const recentHistory = context.messageHistory.slice(-10); // Last 10 messages
+            const recentHistory = context.messageHistory.slice(-5); // Fewer messages for analysis
             for (const msg of recentHistory) {
                 messages.push({ role: msg.role, content: msg.content });
             }
         }
-        // Add current snapshot as context (but don't make it too verbose)
-        if (currentSnapshot) {
-            const snapshotSummary = this.summarizeSnapshot(currentSnapshot);
-            messages.push({
-                role: 'system',
-                content: `Current understanding of human's mental state: ${snapshotSummary}`
-            });
+        // Add the user's current message
+        messages.push({ role: 'user', content: message });
+        return messages;
+    }
+    buildConversationalMessages(message, updatedSnapshot, tomUpdates, context) {
+        const messages = [
+            { role: 'system', content: this.buildConversationalSystemPrompt(updatedSnapshot, tomUpdates) }
+        ];
+        // Add conversation history for context
+        if (context?.messageHistory && context.messageHistory.length > 0) {
+            const recentHistory = context.messageHistory.slice(-8); // Recent context
+            for (const msg of recentHistory) {
+                messages.push({ role: msg.role, content: msg.content });
+            }
         }
         // Add the user's current message
         messages.push({ role: 'user', content: message });
         return messages;
+    }
+    formatAnalysisForConversation(snapshot, updates) {
+        const parts = [];
+        // Recent updates
+        if (updates.length > 0) {
+            const updateSummary = updates.map(u => `${u.type}: ${u.reasoning || 'Updated'}`).join(', ');
+            parts.push(`Recent insights: ${updateSummary}`);
+        }
+        // Current state summary  
+        const snapshotSummary = this.summarizeSnapshot(snapshot);
+        if (snapshotSummary) {
+            parts.push(`Overall state: ${snapshotSummary}`);
+        }
+        return parts.join('\n');
     }
     summarizeSnapshot(snapshot) {
         const parts = [];

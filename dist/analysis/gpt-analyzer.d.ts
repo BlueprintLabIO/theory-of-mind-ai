@@ -14,10 +14,17 @@ export declare class GPTAnalyzer {
     private systemPrompt;
     constructor(apiKey: string, model?: string);
     analyzeAndRespond(message: string, currentSnapshot: ToMSnapshot | null, context?: ConversationContext): Promise<ConversationAnalysis>;
+    analyzeTheoryOfMind(message: string, currentSnapshot: ToMSnapshot | null, context?: ConversationContext): Promise<ToMUpdate[]>;
+    private generateConversationalResponse;
+    streamConversationalResponse(message: string, updatedSnapshot: ToMSnapshot, tomUpdates: ToMUpdate[], context?: ConversationContext): AsyncGenerator<string>;
     streamConversation(message: string, currentSnapshot: ToMSnapshot | null, context?: ConversationContext): AsyncGenerator<OpenAI.Chat.Completions.ChatCompletionChunk>;
     static accumulateToolCalls(chunks: OpenAI.Chat.Completions.ChatCompletionChunk[]): ChatCompletionMessageToolCall[];
     private buildSystemPrompt;
-    private buildConversationMessages;
+    private buildToMSystemPrompt;
+    private buildConversationalSystemPrompt;
+    private buildToMAnalysisMessages;
+    private buildConversationalMessages;
+    private formatAnalysisForConversation;
     private summarizeSnapshot;
     processToolCalls(toolCalls: ChatCompletionMessageToolCall[], currentSnapshot: ToMSnapshot | null): Promise<ToMUpdate[]>;
     createToMUpdateFromToolCall(functionName: string, args: Record<string, unknown>, timestamp: number): ToMUpdate | null;

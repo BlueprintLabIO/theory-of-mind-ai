@@ -12,6 +12,9 @@ export declare class ToMAgent {
     private updateStreams;
     constructor(config: ToMAgentConfig);
     respondAndAnalyze(message: string, context?: ConversationContext): Promise<ConversationResponse>;
+    streamResponse(message: string, snapshot: ToMSnapshot, tomUpdates: ToMUpdate[], context?: ConversationContext): AsyncGenerator<string>;
+    analyzeTheoryOfMind(message: string, context?: ConversationContext): Promise<ToMUpdate[]>;
+    createUpdatedSnapshot(currentSnapshot: ToMSnapshot | null, tomUpdates: ToMUpdate[]): ToMSnapshot;
     updateFromMessage(message: string, context?: ConversationContext): Promise<ToMUpdate[]>;
     streamConversation(message: string, context?: ConversationContext): AsyncGenerator<OpenAI.Chat.Completions.ChatCompletionChunk>;
     processStreamResult(chunks: OpenAI.Chat.Completions.ChatCompletionChunk[]): Promise<ConversationResponse>;

@@ -1,15 +1,5 @@
 import type { ToMAgent } from '../agent/tom-agent.js';
 import type { ConversationContext, ToMUpdate } from '../types/index.js';
-export declare class StreamParamExtractor {
-    private buffer;
-    private targetParam;
-    private toolName;
-    constructor(targetParam: string, toolName: string);
-    feed(delta: string): void;
-    getBuffer(): string;
-    getToolName(): string;
-    reset(): void;
-}
 export interface ToMUICallbacks {
     streamResponse: (delta: string) => void;
     showToolCall: (payload: {
@@ -39,15 +29,7 @@ export interface ToMUICallbacks {
 }
 export declare class ToMStreamHandler {
     private callbacks;
-    private finalToolCalls;
-    private extractors;
-    private accumulatedChunks;
     constructor(callbacks: ToMUICallbacks);
     consume(agent: ToMAgent, message: string, context?: ConversationContext): Promise<void>;
-    private handleToolCallDelta;
-    private createExtractorForTool;
-    private handleToolParameterStream;
-    private extractReasoningFromUpdates;
-    private calculateOverallConfidence;
 }
 //# sourceMappingURL=tom-stream-handler.d.ts.map

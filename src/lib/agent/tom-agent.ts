@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import { TemporalMemory } from '../memory/temporal-memory.js';
 import { GPTAnalyzer } from '../analysis/gpt-analyzer.js';
+
 import type { 
   ToMSnapshot, 
   ToMUpdate, 

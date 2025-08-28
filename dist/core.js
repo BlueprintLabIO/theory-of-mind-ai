@@ -5,6 +5,4 @@ export { TemporalMemory } from './memory/temporal-memory.js';
 export { GPTAnalyzer } from './analysis/gpt-analyzer.js';
 // Tool definitions and types
 export { tomTools } from './analysis/tom-tools.js';
-// Core streaming utilities (UI-agnostic)
-export { StreamParamExtractor } from './streaming/tom-stream-handler.js';
 //# sourceMappingURL=core.js.map

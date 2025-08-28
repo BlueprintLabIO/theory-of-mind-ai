@@ -40,6 +40,18 @@ export class ToMAgent {
             throw error;
         }
     }
+    async *streamResponse(message, snapshot, tomUpdates, context) {
+        for await (const chunk of this.analyzer.streamConversationalResponse(message, snapshot, tomUpdates, context)) {
+            yield chunk;
+        }
+    }
+    async analyzeTheoryOfMind(message, context) {
+        const currentSnapshot = this.memory.getCurrentSnapshot();
+        return await this.analyzer.analyzeTheoryOfMind(message, currentSnapshot, context);
+    }
+    createUpdatedSnapshot(currentSnapshot, tomUpdates) {
+        return this.analyzer.createUpdatedSnapshot(currentSnapshot, tomUpdates);
+    }
     // Legacy method for backward compatibility
     async updateFromMessage(message, context) {
         const result = await this.respondAndAnalyze(message, context);
