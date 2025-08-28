@@ -8,10 +8,5 @@ export { GPTAnalyzer, type ConversationAnalysis } from './analysis/gpt-analyzer.
 // Tool definitions and types
 export { tomTools, type ToMToolCall } from './analysis/tom-tools.js';
 
-// Core streaming utilities (UI-agnostic)
-export { 
-  type ToMUICallbacks 
-} from './streaming/tom-stream-handler.js';
-
 // Export all type definitions
 export type * from './types/index.js';
