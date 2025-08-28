@@ -1,0 +1,33 @@
+{
+	"compilerOptions": {
+		"outDir": "./dist",
+		"rootDir": "./src/lib",
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"module": "ESNext",
+		"target": "ES2022",
+		"moduleResolution": "bundler",
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"noEmit": false,
+		"emitDeclarationOnly": false
+	},
+	"include": [
+		"src/lib/agent/**/*",
+		"src/lib/memory/**/*",
+		"src/lib/analysis/**/*",
+		"src/lib/streaming/**/*",
+		"src/lib/types/**/*",
+		"src/lib/core.ts"
+	],
+	"exclude": [
+		"src/lib/components/**/*",
+		"src/lib/stores/**/*",
+		"src/lib/styles/**/*",
+		"**/*.test.*",
+		"**/*.spec.*"
+	]
+}

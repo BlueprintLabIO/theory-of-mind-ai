@@ -1,0 +1,220 @@
+/* Apple HIG Design Tokens */
+
+:root {
+  /* Apple System Colors */
+  --apple-blue: rgb(0, 122, 255);
+  --apple-green: rgb(52, 199, 89);
+  --apple-orange: rgb(255, 149, 0);
+  --apple-red: rgb(255, 59, 48);
+  --apple-purple: rgb(175, 82, 222);
+  --apple-gray: rgb(142, 142, 147);
+  --apple-gray-2: rgb(174, 174, 178);
+  --apple-gray-3: rgb(199, 199, 204);
+  --apple-gray-4: rgb(209, 209, 214);
+  --apple-gray-5: rgb(229, 229, 234);
+  --apple-gray-6: rgb(242, 242, 247);
+  
+  /* Apple Semantic Colors */
+  --apple-label: rgb(0, 0, 0);
+  --apple-secondary-label: rgba(60, 60, 67, 0.6);
+  --apple-tertiary-label: rgba(60, 60, 67, 0.3);
+  --apple-quaternary-label: rgba(60, 60, 67, 0.18);
+  
+  /* Apple Backgrounds */
+  --apple-system-background: rgb(255, 255, 255);
+  --apple-secondary-system-background: rgb(242, 242, 247);
+  --apple-tertiary-system-background: rgb(255, 255, 255);
+  
+  /* Apple Grouped Backgrounds */
+  --apple-system-grouped-background: rgb(242, 242, 247);
+  --apple-secondary-system-grouped-background: rgb(255, 255, 255);
+  --apple-tertiary-system-grouped-background: rgb(242, 242, 247);
+  
+  /* Apple Fills */
+  --apple-system-fill: rgba(120, 120, 128, 0.2);
+  --apple-secondary-system-fill: rgba(120, 120, 128, 0.16);
+  --apple-tertiary-system-fill: rgba(118, 118, 128, 0.12);
+  --apple-quaternary-system-fill: rgba(116, 116, 128, 0.08);
+  
+  /* Apple Separators */
+  --apple-separator: rgba(60, 60, 67, 0.29);
+  --apple-opaque-separator: rgb(198, 198, 200);
+  
+  /* Apple Typography */
+  --apple-font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+  --apple-font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  
+  /* Apple Border Radius */
+  --apple-radius-small: 6px;
+  --apple-radius-medium: 10px;
+  --apple-radius-large: 16px;
+  --apple-radius-xl: 20px;
+  
+  /* Apple Shadows */
+  --apple-shadow-small: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --apple-shadow-medium: 0 3px 6px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.12);
+  --apple-shadow-large: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.10);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Apple System Colors - Dark */
+    --apple-blue: rgb(10, 132, 255);
+    --apple-green: rgb(48, 209, 88);
+    --apple-orange: rgb(255, 159, 10);
+    --apple-red: rgb(255, 69, 58);
+    --apple-purple: rgb(191, 90, 242);
+    --apple-gray: rgb(142, 142, 147);
+    --apple-gray-2: rgb(99, 99, 102);
+    --apple-gray-3: rgb(72, 72, 74);
+    --apple-gray-4: rgb(58, 58, 60);
+    --apple-gray-5: rgb(44, 44, 46);
+    --apple-gray-6: rgb(28, 28, 30);
+    
+    /* Apple Semantic Colors - Dark */
+    --apple-label: rgb(255, 255, 255);
+    --apple-secondary-label: rgba(235, 235, 245, 0.6);
+    --apple-tertiary-label: rgba(235, 235, 245, 0.3);
+    --apple-quaternary-label: rgba(235, 235, 245, 0.16);
+    
+    /* Apple Backgrounds - Dark */
+    --apple-system-background: rgb(0, 0, 0);
+    --apple-secondary-system-background: rgb(28, 28, 30);
+    --apple-tertiary-system-background: rgb(44, 44, 46);
+    
+    /* Apple Grouped Backgrounds - Dark */
+    --apple-system-grouped-background: rgb(0, 0, 0);
+    --apple-secondary-system-grouped-background: rgb(28, 28, 30);
+    --apple-tertiary-system-grouped-background: rgb(44, 44, 46);
+    
+    /* Apple Fills - Dark */
+    --apple-system-fill: rgba(120, 120, 128, 0.36);
+    --apple-secondary-system-fill: rgba(120, 120, 128, 0.32);
+    --apple-tertiary-system-fill: rgba(118, 118, 128, 0.24);
+    --apple-quaternary-system-fill: rgba(118, 118, 128, 0.18);
+    
+    /* Apple Separators - Dark */
+    --apple-separator: rgba(84, 84, 88, 0.65);
+    --apple-opaque-separator: rgb(56, 56, 58);
+  }
+}
+
+/* Apple Typography Classes */
+.apple-font {
+  font-family: var(--apple-font-family);
+}
+
+.apple-font-mono {
+  font-family: var(--apple-font-mono);
+}
+
+/* Apple Component Classes */
+.apple-card {
+  background: var(--apple-secondary-system-grouped-background);
+  border-radius: var(--apple-radius-large);
+  border: 1px solid var(--apple-separator);
+  box-shadow: var(--apple-shadow-small);
+}
+
+.apple-button {
+  font-family: var(--apple-font-family);
+  font-weight: 600;
+  border-radius: var(--apple-radius-medium);
+  transition: all 0.2s ease;
+}
+
+.apple-button-primary {
+  background: var(--apple-blue);
+  color: white;
+}
+
+.apple-button-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: var(--apple-shadow-medium);
+}
+
+.apple-button-secondary {
+  background: var(--apple-secondary-system-fill);
+  color: var(--apple-label);
+}
+
+.apple-button-secondary:hover {
+  background: var(--apple-tertiary-system-fill);
+}
+
+.apple-input {
+  font-family: var(--apple-font-family);
+  background: var(--apple-tertiary-system-background);
+  border: 1px solid var(--apple-separator);
+  border-radius: var(--apple-radius-medium);
+  color: var(--apple-label);
+  transition: all 0.2s ease;
+}
+
+.apple-input:focus {
+  outline: none;
+  border-color: var(--apple-blue);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+}
+
+.apple-surface {
+  background: var(--apple-system-background);
+  color: var(--apple-label);
+}
+
+.apple-surface-secondary {
+  background: var(--apple-secondary-system-background);
+  color: var(--apple-label);
+}
+
+.apple-surface-grouped {
+  background: var(--apple-system-grouped-background);
+  color: var(--apple-label);
+}
+
+.apple-text-primary {
+  color: var(--apple-label);
+}
+
+.apple-text-secondary {
+  color: var(--apple-secondary-label);
+}
+
+.apple-text-tertiary {
+  color: var(--apple-tertiary-label);
+}
+
+/* Apple Animation Classes */
+.apple-animate {
+  transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.apple-animate-scale:hover {
+  transform: scale(1.02);
+}
+
+.apple-animate-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--apple-shadow-large);
+}
+
+/* Mobile Responsive Utilities */
+@media (max-width: 1023px) {
+  .mobile-stack {
+    flex-direction: column !important;
+  }
+  
+  .mobile-full-height {
+    height: 50vh !important;
+    max-height: 50vh !important;
+  }
+  
+  .mobile-padding {
+    padding: 12px !important;
+  }
+  
+  .mobile-compact {
+    gap: 12px !important;
+  }
+}

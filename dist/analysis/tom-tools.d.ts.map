@@ -1,0 +1,1 @@
+{"version":3,"file":"tom-tools.d.ts","sourceRoot":"","sources":["../../src/lib/analysis/tom-tools.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,kBAAkB,EAAE,MAAM,mCAAmC,CAAC;AAE5E,eAAO,MAAM,QAAQ,EAAE,kBAAkB,EA6OxC,CAAC;AAEF,MAAM,WAAW,WAAW;IAC1B,aAAa,EAAE,MAAM,CAAC;IACtB,SAAS,EAAE,MAAM,CAAC,MAAM,EAAE,OAAO,CAAC,CAAC;IACnC,SAAS,EAAE,MAAM,CAAC;CACnB"}
