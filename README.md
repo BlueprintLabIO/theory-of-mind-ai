@@ -2,6 +2,8 @@
 
 A TypeScript library for building AI agents with dynamic theory of mind capabilities, featuring real-time understanding of human mental states during conversations.
 
+Live demo: https://theory-of-mind.blueprintlab.io/
+
 ## Overview
 
 This project combines:

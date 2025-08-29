@@ -1,17 +1,17 @@
 {
-	"name": "@blueprint-design-lab/theory-of-mind-ai",
-	"version": "0.1.0",
+	"name": "@blueprintlabio/theory-of-mind-ai",
+	"version": "0.1.1",
 	"type": "module",
 	"description": "A TypeScript library for building AI agents with dynamic theory of mind capabilities, featuring real-time understanding of human mental states during conversations.",
 	"author": "Blueprint Design Lab",
 	"license": "MIT",
-	"homepage": "https://github.com/BlueprintDesignLab/theory-of-mind-ai#readme",
+	"homepage": "https://github.com/BlueprintLabIO/theory-of-mind-ai#readme",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/BlueprintDesignLab/theory-of-mind-ai.git"
+		"url": "git+https://github.com/BlueprintLabIO/theory-of-mind-ai.git"
 	},
 	"bugs": {
-		"url": "https://github.com/BlueprintDesignLab/theory-of-mind-ai/issues"
+		"url": "https://github.com/BlueprintLabIO/theory-of-mind-ai/issues"
 	},
 	"keywords": [
 		"theory-of-mind",
